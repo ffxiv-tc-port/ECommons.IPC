@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net10.0-windows7.0</TargetFramework>
+        <TargetFramework>net9.0-windows7.0</TargetFramework>
         <Platforms>x64</Platforms>
         <LangVersion>preview</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -44,14 +44,22 @@
 
     <PropertyGroup>
         <LangVersion>preview</LangVersion>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
         <Title>ECommons</Title>
         <PackageProjectUrl>https://github.com/NightmareXIV/ECommons.IPC</PackageProjectUrl>
         <RepositoryUrl>https://github.com/NightmareXIV/ECommons.IPC</RepositoryUrl>
     </PropertyGroup>
 
+    <!--
+        台服移植:改用 ProjectReference 指向本 org 的 ECommons fork(分支 pin-wrathcombo-tc-api13),
+        不吃 NuGet 上的 ECommons 3.2.0.11(那是 net10 / API15 的)。
+        這個相對路徑對兩種佈局都成立,所以不需要 Condition:
+          ①獨立 clone: D:/ffxiv-tc-port/ECommons.IPC/ + D:/ffxiv-tc-port/ECommons/
+          ②消費端 repo: <repo>/ECommons.IPC/ + <repo>/ECommons/(兩個都是子模組)
+        兩者從本 csproj 往上兩層都會落在放這兩個資料夾的同一層。
+    -->
     <ItemGroup>
-      <PackageReference Include="ECommons" Version="3.2.0.11" />
+      <ProjectReference Include="..\..\ECommons\ECommons\ECommons.csproj" />
     </ItemGroup>
 
     <ItemGroup>
