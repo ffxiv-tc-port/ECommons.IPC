@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>NightmareXIV</Authors>
-        <BaseVersion>1.0.0.23</BaseVersion>
+        <BaseVersion>1.0.0.24</BaseVersion>
         <PackageKind></PackageKind>
         <VersionSuffix Condition="'$(PackageKind)' != ''">-$(PackageKind)</VersionSuffix>
         <Version>$(BaseVersion)$(VersionSuffix)</Version>
@@ -25,6 +25,19 @@
         <Nullable>enable</Nullable>
         <WarningsAsErrors>RS0030</WarningsAsErrors>
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+        <!--
+            🔴 建 .sln 時 MSBuild 預設會把 Configuration/Platform 從 ProjectReference 上「解掉」
+            (ShouldUnsetParentConfigurationAndPlatform 預設 true),改由方案的設定對應表決定。
+            ECommons 是隔壁的 fork/子模組、刻意沒有被收進 ECommons.IPC.sln,查不到對應就退回
+            它自己的預設值 Debug —— 於是 `dotnet build ECommons.IPC.sln -c Release` 會把
+            **Debug 版**的 ECommons.dll 複製進 bin/Release/,而建置本身 0 error,完全沒有徵兆。
+            (2026-08-16 實測:修正前 bin/Release/ECommons.dll 的 md5 等於 ECommons/bin/Debug/ 那顆。)
+            ⚠️ 在 ProjectReference 上寫 SetConfiguration 沒有用:AssignProjectConfiguration 會覆寫
+            掉那份 metadata。直接建 .csproj 時本來就是繼承父設定,所以這對 CI 與發版路徑是 no-op。
+            先例:Questionable df25d8aa9。
+        -->
+        <ShouldUnsetParentConfigurationAndPlatform>false</ShouldUnsetParentConfigurationAndPlatform>
     </PropertyGroup>
 
     <PropertyGroup Label="Documentation">
