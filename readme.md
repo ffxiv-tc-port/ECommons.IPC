@@ -1,3 +1,26 @@
+<!-- ffxiv-tc-port 繁體中文說明開始 -->
+# ECommons.IPC(台服 fork)
+
+由 NightmareXIV 開發的函式庫，收錄各插件的 IPC 呼叫封裝，避免每個插件各自複製貼上一份。
+
+## 台服 fork 的目的
+
+跟隨艦隊釘 API13 / net9，純版本追隨。
+
+## 與上游的差異
+
+無，目前與上游完全一致（`git diff upstream/main` 零差異）。
+
+## 誰在用它
+
+艦隊裡 2 個插件消費：`AutoDuty`、`AutoRetainer`。
+
+---
+
+以下為上游原始 README，內容未經修改：
+
+<!-- ffxiv-tc-port 繁體中文說明結束 -->
+
 # ECommons.IPC
 This library aims to collect IPC of various plugins to avoid/minimize amount of copypasting between plugins and for easier overall maintenance.
 
