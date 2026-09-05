@@ -1,4 +1,4 @@
-﻿using ECommons.EzIpcManager;
+﻿﻿using ECommons.EzIpcManager;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -67,10 +67,14 @@ public sealed class LifestreamIPC : IPCBase
     public Func<bool> IsBusy { get; private set; }
 
     /// <summary>
-    /// city aetheryte id
+    /// 提供端是 Lifestream 的 <c>IPCProvider.GetResidentialTerritory(ResidentialAetheryteKind r)</c>。
+    /// 原本宣告成 <c>Func&lt;int, uint&gt;</c>,只能靠 <c>CallGateChannel.ConvertObject</c> 的 JSON
+    /// 來回轉換對上,而且呼叫端得自己知道 9/2/8/70/111 這些魔術數字。
+    /// 改用與提供端逐值相同的鏡像列舉(同 <see cref="WorldChangeAetheryte"/>、<see cref="PropertyType"/>
+    /// 的既有做法):轉換路徑不變(列舉預設序列化成數值),但契約自我說明。
     /// </summary>
     [EzIPC("GetResidentialTerritory")]
-    public Func<int, uint> GetResidentialTerritory { get; private set; }
+    public Func<ResidentialAetheryteKind, uint> GetResidentialTerritory { get; private set; }
 
     /// <summary>
     /// territory, plot
