@@ -19,6 +19,11 @@ namespace ECommons.IPC.Subscribers.Gearsetter
 
         public override string InternalName { get; } = "Gearsetter";
 
-        [EzIPC] public Func<byte, List<(uint ItemId, InventoryType? SourceInventory, byte? SourceInventorySlot, RaptureGearsetModule.GearsetItemIndex TargetSlot)>> GetRecommendationsForGearset { get; private set; }
+        /*
+         * Gearsetter 提供端 (Gearsetter/External/GearsetterIpc.cs) 回傳的 tuple 第三元是 int?,這裡要逐字相同。
+         * 宣告成 byte? 是窄化:值不超過 255 時靜默成功,超過 255 才在 CallGateChannel 的 JSON 轉換擲
+         * IpcTypeMismatchError —— 而 SafeWrapper.IPCException 只攔 IpcNotReadyError,攔不住它。
+         */
+        [EzIPC] public Func<byte, List<(uint ItemId, InventoryType? SourceInventory, int? SourceInventorySlot, RaptureGearsetModule.GearsetItemIndex TargetSlot)>> GetRecommendationsForGearset { get; private set; }
     }
 }

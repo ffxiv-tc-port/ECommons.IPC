@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>NightmareXIV</Authors>
-        <BaseVersion>1.0.0.23</BaseVersion>
+        <BaseVersion>1.0.0.24</BaseVersion>
         <PackageKind></PackageKind>
         <VersionSuffix Condition="'$(PackageKind)' != ''">-$(PackageKind)</VersionSuffix>
         <Version>$(BaseVersion)$(VersionSuffix)</Version>
@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net10.0-windows7.0</TargetFramework>
+        <TargetFramework>net9.0-windows7.0</TargetFramework>
         <Platforms>x64</Platforms>
         <LangVersion>preview</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -25,6 +25,19 @@
         <Nullable>enable</Nullable>
         <WarningsAsErrors>RS0030</WarningsAsErrors>
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+        <!--
+            🔴 建 .sln 時 MSBuild 預設會把 Configuration/Platform 從 ProjectReference 上「解掉」
+            (ShouldUnsetParentConfigurationAndPlatform 預設 true),改由方案的設定對應表決定。
+            ECommons 是隔壁的 fork/子模組、刻意沒有被收進 ECommons.IPC.sln,查不到對應就退回
+            它自己的預設值 Debug —— 於是 `dotnet build ECommons.IPC.sln -c Release` 會把
+            **Debug 版**的 ECommons.dll 複製進 bin/Release/,而建置本身 0 error,完全沒有徵兆。
+            (2026-08-16 實測:修正前 bin/Release/ECommons.dll 的 md5 等於 ECommons/bin/Debug/ 那顆。)
+            ⚠️ 在 ProjectReference 上寫 SetConfiguration 沒有用:AssignProjectConfiguration 會覆寫
+            掉那份 metadata。直接建 .csproj 時本來就是繼承父設定,所以這對 CI 與發版路徑是 no-op。
+            先例:Questionable df25d8aa9。
+        -->
+        <ShouldUnsetParentConfigurationAndPlatform>false</ShouldUnsetParentConfigurationAndPlatform>
     </PropertyGroup>
 
     <PropertyGroup Label="Documentation">
@@ -44,14 +57,22 @@
 
     <PropertyGroup>
         <LangVersion>preview</LangVersion>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
         <Title>ECommons</Title>
         <PackageProjectUrl>https://github.com/NightmareXIV/ECommons.IPC</PackageProjectUrl>
         <RepositoryUrl>https://github.com/NightmareXIV/ECommons.IPC</RepositoryUrl>
     </PropertyGroup>
 
+    <!--
+        台服移植:改用 ProjectReference 指向本 org 的 ECommons fork(分支 pin-wrathcombo-tc-api13),
+        不吃 NuGet 上的 ECommons 3.2.0.11(那是 net10 / API15 的)。
+        這個相對路徑對兩種佈局都成立,所以不需要 Condition:
+          ①獨立 clone: D:/ffxiv-tc-port/ECommons.IPC/ + D:/ffxiv-tc-port/ECommons/
+          ②消費端 repo: <repo>/ECommons.IPC/ + <repo>/ECommons/(兩個都是子模組)
+        兩者從本 csproj 往上兩層都會落在放這兩個資料夾的同一層。
+    -->
     <ItemGroup>
-      <PackageReference Include="ECommons" Version="3.2.0.11" />
+      <ProjectReference Include="..\..\ECommons\ECommons\ECommons.csproj" />
     </ItemGroup>
 
     <ItemGroup>

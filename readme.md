@@ -1,3 +1,36 @@
+<!-- ffxiv-tc-port 繁體中文說明開始 -->
+# ECommons.IPC(台服 fork)
+
+由 NightmareXIV 開發的函式庫，收錄各插件的 IPC 呼叫封裝，避免每個插件各自複製貼上一份。
+
+## 台服 fork 的目的
+
+跟隨艦隊釘 API13 / net9，並把訂閱端的宣告對齊艦隊裡提供端插件的實際簽章——宣告與提供端
+型別或參數個數不符時，每次呼叫都會失敗，而且 `SafeWrapper.IPCException` 攔不住那種例外。
+
+## 與上游的差異
+
+- **Questionable**：`ClearQuestPriority`／`AddQuestPriority` 的參數宣告原本對調，已改成與提供端一致。
+- **AutoDuty**：`SetConfig` 第二個參數改成 `string`（提供端的實際型別）；`SetConfigValue` 收到多個值時
+  記錄錯誤後略過，不再送出必定失敗的呼叫。
+- **AutoRetainer**：`EnqueueHET` 參數宣告對齊提供端。
+- **Lifestream**：`GetResidentialTerritory` 改用住宅區傳送點列舉 `ResidentialAetheryteKind`。
+- **Gearsetter**：`SourceInventorySlot` 改為與提供端相同的 `int?`。
+- **AllaganTools**：新增 `GetCharactersOwnedByActive`。
+- 專案檔改成艦隊的 API13 / net9 建置方式，移除上游的發布 workflow。
+
+上游之後的新增內容沒有合併進來（艦隊釘 API13，上游已往後走）。
+
+## 誰在用它
+
+目前 2 個插件 repo 以子模組使用：`AutoDuty`、`AutoRetainer`。
+
+---
+
+以下為上游原始 README，內容未經修改：
+
+<!-- ffxiv-tc-port 繁體中文說明結束 -->
+
 # ECommons.IPC
 This library aims to collect IPC of various plugins to avoid/minimize amount of copypasting between plugins and for easier overall maintenance.
 
