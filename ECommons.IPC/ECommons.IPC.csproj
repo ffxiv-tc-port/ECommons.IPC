@@ -64,7 +64,7 @@
     </PropertyGroup>
 
     <!--
-        台服移植:改用 ProjectReference 指向本 org 的 ECommons fork(分支 pin-wrathcombo-tc-api13),
+        台服移植:改用 ProjectReference 指向本 org 的 ECommons fork(分支 tc-7.30),
         不吃 NuGet 上的 ECommons 3.2.0.11(那是 net10 / API15 的)。
         這個相對路徑對兩種佈局都成立,所以不需要 Condition:
           ①獨立 clone: D:/ffxiv-tc-port/ECommons.IPC/ + D:/ffxiv-tc-port/ECommons/
